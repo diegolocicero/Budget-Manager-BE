@@ -1,10 +1,15 @@
 package com.example.budgetmanager.model;
 
 import jakarta.persistence.*;
+import java.util.UUID;
  
 @Entity
 @Table(name = "utenti")
 public class User extends BaseModel {
+
+    @Id
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
  
     @Column(name = "username", nullable = false, unique = true)
     private String username;

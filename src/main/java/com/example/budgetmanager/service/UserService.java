@@ -3,7 +3,7 @@ package com.example.budgetmanager.service;
 import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.dto.UserDTO;
 import com.example.budgetmanager.repository.UserRepository;
-import com.example.budgetmanager.exception.ResourceNotFoundException;
+import com.example.budgetmanager.exceptionHandler.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

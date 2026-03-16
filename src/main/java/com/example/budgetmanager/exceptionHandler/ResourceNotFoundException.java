@@ -1,4 +1,4 @@
-package com.example.budgetmanager.exception;
+package com.example.budgetmanager.exceptionHandler;
 
 public class ResourceNotFoundException extends RuntimeException {
 

@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
  
 import java.util.List;
+import java.util.UUID;
  
 @Repository
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
+
+    List<Deposit> findByUserId(UUID userId);
  
     List<Deposit> findByLabel(String label);
  
