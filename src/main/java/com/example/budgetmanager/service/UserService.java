@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
  
 import java.util.List;
+import java.util.UUID;
  
 @Service
 @Transactional(readOnly = true)
@@ -28,7 +29,7 @@ public class UserService {
                 .toList();
     }
  
-    public UserDTO.Response getById(Long id) {
+    public UserDTO.Response getById(UUID id) {
         return toResponse(getOrThrow(id));
     }
  
@@ -43,7 +44,7 @@ public class UserService {
     }
  
     @Transactional
-    public UserDTO.Response update(Long id, UserDTO.Request request) {
+    public UserDTO.Response update(UUID id, UserDTO.Request request) {
         User user = getOrThrow(id);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
@@ -54,13 +55,13 @@ public class UserService {
     }
  
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         getOrThrow(id);
         userRepository.deleteById(id);
     }
  
  
-    private User getOrThrow(Long id) {
+    private User getOrThrow(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
