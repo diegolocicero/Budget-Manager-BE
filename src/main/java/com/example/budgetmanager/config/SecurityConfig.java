@@ -7,29 +7,67 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import java.net.URL;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // disabilito CSRF perchè l'app e stateless e usa token JWT (no cookies)
-            .csrf(csrf -> csrf.disable())
-            
-            //  setto la sessione a stateless
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
-            // 3. Definiamo le regole di accesso
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() //  espongo pubblicamente solo le API di auth
-                .anyRequest().authenticated()                 
-            )
-            
-            //  configuro il server come resource server con JWT come metodo di auth
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
+                    try {
+                        jwt.decoder(jwtDecoder());
+                    } catch (Exception e) {
+                        throw new RuntimeException("Errore nella configurazione del JwtDecoder", e);
+                    }
+                }));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", config);
+        return source;
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() throws Exception {
+        var jwkSource = JWKSourceBuilder
+                .create(new URL("https://flolfdlndkolqhdjomtv.supabase.co/auth/v1/.well-known/jwks.json"))
+                .build();
+
+        var keySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.ES256, jwkSource);
+
+        var jwtProcessor = new DefaultJWTProcessor<SecurityContext>();
+        jwtProcessor.setJWSKeySelector(keySelector);
+
+        return new NimbusJwtDecoder(jwtProcessor);
     }
 }
