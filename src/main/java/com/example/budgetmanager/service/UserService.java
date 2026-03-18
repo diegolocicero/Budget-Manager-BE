@@ -4,21 +4,18 @@ import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.dto.UserDTO;
 import com.example.budgetmanager.repository.UserRepository;
 import com.example.budgetmanager.exceptionHandler.ResourceNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
- 
+
 import java.util.List;
 import java.util.UUID;
- 
+
 @Service
 @Transactional(readOnly = true)
-public class UserService {
-
-    private final UserRepository userRepository;
+public class UserService extends BaseService {
 
     public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        super(userRepository);
     }
 
     public List<UserDTO.Response> getAll() {

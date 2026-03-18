@@ -2,12 +2,9 @@ package com.example.budgetmanager.service;
 
 import com.example.budgetmanager.dto.WithdrawalDTO;
 import com.example.budgetmanager.model.Withdrawal;
-import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.repository.WithdrawalRepository;
 import com.example.budgetmanager.repository.UserRepository;
 import com.example.budgetmanager.exceptionHandler.ResourceNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,47 +14,37 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class WithdrawalService {
+public class WithdrawalService extends BaseService {
 
     private final WithdrawalRepository withdrawalRepository;
-    private final UserRepository userRepository;
 
     public WithdrawalService(WithdrawalRepository withdrawalRepository, UserRepository userRepository) {
+        super(userRepository);
         this.withdrawalRepository = withdrawalRepository;
-        this.userRepository = userRepository;
     }
 
     public List<WithdrawalDTO.Response> getAll() {
-        UUID userId = getCurrentUserId();
-        return withdrawalRepository.findByUserId(userId).stream()
+        return withdrawalRepository.findByUserId(getCurrentUserId()).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     public WithdrawalDTO.Response getById(Long id) {
         Withdrawal withdrawal = getOrThrow(id);
-        if (!withdrawal.getUser().getId().equals(Long.valueOf(getCurrentUserId().toString()))) {
-            throw new ResourceNotFoundException("Withdrawal", id);
-        }
+        validateOwnership(withdrawal.getUser().getId());
         return toResponse(withdrawal);
     }
 
     @Transactional
     public WithdrawalDTO.Response create(WithdrawalDTO.Request request) {
-        User user = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        Withdrawal withdrawal = new Withdrawal(request.getValue(), request.getLabel(), user);
+        Withdrawal withdrawal = new Withdrawal(request.getValue(), request.getLabel(), getOrCreateUser(getCurrentUserId()));
         return toResponse(withdrawalRepository.save(withdrawal));
     }
 
     @Transactional
     public WithdrawalDTO.Response update(Long id, WithdrawalDTO.Request request) {
         Withdrawal withdrawal = getOrThrow(id);
-        if (!withdrawal.getUser().getId().equals(getCurrentUserId().toString())) {
-            throw new ResourceNotFoundException("Withdrawal", id);
-        }
-        
+        validateOwnership(withdrawal.getUser().getId());
         withdrawal.setValue(request.getValue());
         withdrawal.setLabel(request.getLabel());
         return toResponse(withdrawalRepository.save(withdrawal));
@@ -66,15 +53,14 @@ public class WithdrawalService {
     @Transactional
     public void delete(Long id) {
         Withdrawal withdrawal = getOrThrow(id);
-        if (!withdrawal.getUser().getId().equals(Long.valueOf(getCurrentUserId().toString()))) {
-            throw new ResourceNotFoundException("Withdrawal", id);
-        }
+        validateOwnership(withdrawal.getUser().getId());
         withdrawalRepository.deleteById(id);
     }
 
-    private UUID getCurrentUserId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return UUID.fromString(auth.getName()); 
+    private void validateOwnership(UUID ownerId) {
+        if (!ownerId.equals(getCurrentUserId())) {
+            throw new ResourceNotFoundException("Withdrawal", ownerId);
+        }
     }
 
     private Withdrawal getOrThrow(Long id) {

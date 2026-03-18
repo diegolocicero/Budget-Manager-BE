@@ -15,6 +15,7 @@ C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\exam
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\repository\DepositRepository.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\repository\UserRepository.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\repository\WithdrawalRepository.java
+C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\BaseService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\DepositService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\UserService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\WithdrawalService.java

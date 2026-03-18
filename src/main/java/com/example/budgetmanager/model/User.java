@@ -22,6 +22,13 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now();
+        }
+    }
+
     public User() {
     }
 
@@ -32,6 +39,10 @@ public class User {
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public OffsetDateTime getCreatedAt() {
