@@ -34,11 +34,9 @@ public class UserController {
     }
 
     // PUT (UPDATE)
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO.Response> updateUser(
-            @PathVariable UUID id,
-            @Valid @RequestBody UserDTO.Request request) {
-        return ResponseEntity.ok(userService.update(id, request));
+    @PutMapping("/me")
+    public ResponseEntity<UserDTO.Response> updateMe(@Valid @RequestBody UserDTO.Request request) {
+        return ResponseEntity.ok(userService.updateMe(request));
     }
 
     // DELETE
@@ -48,7 +46,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // DA CHIAMARE DOPO IL LOGIN A FRONTEND PER CREARE L'UTENTE ANCHE NELLA TABELLA UTENTI DEL DB PUBLIC DI SUPABASE
+    // DA CHIAMARE DOPO IL LOGIN A FRONTEND PER CREARE L'UTENTE ANCHE NELLA TABELLA
+    // UTENTI DEL DB PUBLIC DI SUPABASE
     @PostMapping("/sync")
     public ResponseEntity<Void> sync() {
         userService.syncCurrentUser();

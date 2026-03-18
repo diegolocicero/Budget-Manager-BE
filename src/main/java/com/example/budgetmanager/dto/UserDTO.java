@@ -2,35 +2,61 @@ package com.example.budgetmanager.dto;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
- 
+
 public class UserDTO {
- 
+
     public static class Request {
         private String username;
         private String password;
         private String email;
- 
-        public Request() {}
- 
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
- 
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
- 
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
+        private String avatarUrl;
+
+        public Request() {
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+        }
     }
- 
+
     public static class Response {
         private UUID id;
         private String username;
         private String email;
         private String avatarUrl;
         private OffsetDateTime createdAt;
- 
-        public Response() {}
- 
+
+        public Response() {
+        }
+
         public Response(UUID id, String username, String email, String avatarUrl, OffsetDateTime createdAt) {
             this.id = id;
             this.username = username;
@@ -38,20 +64,45 @@ public class UserDTO {
             this.avatarUrl = avatarUrl;
             this.createdAt = createdAt;
         }
- 
-        public UUID getId() { return id; }
-        public void setId(UUID id) { this.id = id; }
- 
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
- 
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
- 
-        public OffsetDateTime getCreatedAt() { return createdAt; }
-        public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
 
-        public String getAvatarUrl() { return avatarUrl; }
-        public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public OffsetDateTime getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(OffsetDateTime createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+        }
     }
 }

@@ -31,10 +31,12 @@ public class UserService extends BaseService {
     }
 
     @Transactional
-    public UserDTO.Response update(UUID id, UserDTO.Request request) {
-        User user = getOrThrow(id);
+    public UserDTO.Response updateMe(UserDTO.Request request) {
+        User user = getOrThrow(getCurrentUserId());
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
+        if (request.getAvatarUrl() != null) {
+            user.setAvatarUrl(request.getAvatarUrl());
+        }
         return toResponse(userRepository.save(user));
     }
 
