@@ -54,7 +54,7 @@ public class WithdrawalService {
     @Transactional
     public WithdrawalDTO.Response update(Long id, WithdrawalDTO.Request request) {
         Withdrawal withdrawal = getOrThrow(id);
-        if (!withdrawal.getUser().getId().equals(Long.valueOf(getCurrentUserId().toString()))) {
+        if (!withdrawal.getUser().getId().equals(getCurrentUserId().toString())) {
             throw new ResourceNotFoundException("Withdrawal", id);
         }
         

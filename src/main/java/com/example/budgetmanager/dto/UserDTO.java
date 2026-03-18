@@ -1,6 +1,7 @@
 package com.example.budgetmanager.dto;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
  
 public class UserDTO {
  
@@ -22,22 +23,22 @@ public class UserDTO {
     }
  
     public static class Response {
-        private Long id;
+        private UUID id;
         private String username;
         private String email;
         private OffsetDateTime createdAt;
  
         public Response() {}
  
-        public Response(Long id, String username, String email, OffsetDateTime createdAt) {
+        public Response(UUID id, String username, String email, OffsetDateTime createdAt) {
             this.id = id;
             this.username = username;
             this.email = email;
             this.createdAt = createdAt;
         }
  
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
+        public UUID getId() { return id; }
+        public void setId(UUID id) { this.id = id; }
  
         public String getUsername() { return username; }
         public void setUsername(String username) { this.username = username; }

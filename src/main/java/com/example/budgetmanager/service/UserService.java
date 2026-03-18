@@ -14,58 +14,48 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 public class UserService {
- 
+
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
- 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
- 
+
     public List<UserDTO.Response> getAll() {
         return userRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
     }
- 
+
     public UserDTO.Response getById(UUID id) {
         return toResponse(getOrThrow(id));
     }
- 
+
     @Transactional
     public UserDTO.Response create(UserDTO.Request request) {
-        User user = new User(
-                request.getUsername(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getEmail()
-        );
+        User user = new User(request.getUsername(), request.getEmail());
         return toResponse(userRepository.save(user));
     }
- 
+
     @Transactional
     public UserDTO.Response update(UUID id, UserDTO.Request request) {
         User user = getOrThrow(id);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
         return toResponse(userRepository.save(user));
     }
- 
+
     @Transactional
     public void delete(UUID id) {
         getOrThrow(id);
         userRepository.deleteById(id);
     }
- 
- 
+
     private User getOrThrow(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
- 
+
     private UserDTO.Response toResponse(User u) {
         return new UserDTO.Response(u.getId(), u.getUsername(), u.getEmail(), u.getCreatedAt());
     }

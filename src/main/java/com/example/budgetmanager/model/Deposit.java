@@ -13,7 +13,7 @@ public class Deposit extends BaseModel {
     private String label;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "uuid")
     private User user;
 
     public Deposit() {}
