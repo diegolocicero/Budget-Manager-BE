@@ -41,6 +41,7 @@ public abstract class BaseService {
             email = jwt.getClaimAsString("email") != null ? jwt.getClaimAsString("email") : "";
         }
 
+        //assegna un avatar 
         String avatarUrl = AVATAR_URLS.get(new java.util.Random().nextInt(AVATAR_URLS.size()));
 
         User newUser = new User();

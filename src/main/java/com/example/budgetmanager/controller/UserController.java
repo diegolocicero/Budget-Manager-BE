@@ -48,6 +48,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // DA CHIAMARE DOPO IL LOGIN A FRONTEND PER CREARE L'UTENTE ANCHE NELLA TABELLA UTENTI DEL DB PUBLIC DI SUPABASE
+    @PostMapping("/sync")
+    public ResponseEntity<Void> sync() {
+        userService.syncCurrentUser();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserDTO.Response> getMe() {
         return ResponseEntity.ok(userService.getMe());

@@ -44,6 +44,11 @@ public class UserService extends BaseService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
+    public void syncCurrentUser() {
+        getOrCreateUser(getCurrentUserId());
+    }
+
     public UserDTO.Response getMe() {
         return toResponse(getOrThrow(getCurrentUserId()));
     }
