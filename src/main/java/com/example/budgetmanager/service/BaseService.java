@@ -29,7 +29,9 @@ public abstract class BaseService {
             "/avatars/avatar_3.png",
             "/avatars/avatar_4.png",
             "/avatars/avatar_5.png",
-            "/avatars/avatar_6.png"
+            "/avatars/avatar_6.png",
+            "/avatars/avatar_7.png",
+            "/avatars/avatar_8.png"
         );
 
     protected User getOrCreateUser(UUID userId) {
