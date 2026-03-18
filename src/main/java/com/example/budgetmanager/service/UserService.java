@@ -24,10 +24,6 @@ public class UserService extends BaseService {
                 .toList();
     }
 
-    public UserDTO.Response getById(UUID id) {
-        return toResponse(getOrThrow(id));
-    }
-
     @Transactional
     public UserDTO.Response create(UserDTO.Request request) {
         User user = new User(request.getUsername(), request.getEmail());
@@ -48,12 +44,16 @@ public class UserService extends BaseService {
         userRepository.deleteById(id);
     }
 
+    public UserDTO.Response getMe() {
+        return toResponse(getOrThrow(getCurrentUserId()));
+    }
+
     private User getOrThrow(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
 
     private UserDTO.Response toResponse(User u) {
-        return new UserDTO.Response(u.getId(), u.getUsername(), u.getEmail(), u.getCreatedAt());
+        return new UserDTO.Response(u.getId(), u.getUsername(), u.getEmail(), u.getAvatarUrl(), u.getCreatedAt());
     }
 }

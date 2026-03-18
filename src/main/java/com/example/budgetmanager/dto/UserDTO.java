@@ -26,14 +26,16 @@ public class UserDTO {
         private UUID id;
         private String username;
         private String email;
+        private String avatarUrl;
         private OffsetDateTime createdAt;
  
         public Response() {}
  
-        public Response(UUID id, String username, String email, OffsetDateTime createdAt) {
+        public Response(UUID id, String username, String email, String avatarUrl, OffsetDateTime createdAt) {
             this.id = id;
             this.username = username;
             this.email = email;
+            this.avatarUrl = avatarUrl;
             this.createdAt = createdAt;
         }
  
@@ -48,5 +50,8 @@ public class UserDTO {
  
         public OffsetDateTime getCreatedAt() { return createdAt; }
         public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
+
+        public String getAvatarUrl() { return avatarUrl; }
+        public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
     }
 }
