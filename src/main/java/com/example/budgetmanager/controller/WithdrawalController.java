@@ -41,7 +41,7 @@ public class WithdrawalController {
     // PUT (UPDATE)
     @PutMapping("/{id}")
     public ResponseEntity<WithdrawalDTO.Response> update(
-            @PathVariable Long id, 
+            @PathVariable Long id,
             @Valid @RequestBody WithdrawalDTO.Request request) {
         return ResponseEntity.ok(withdrawalService.update(id, request));
     }
@@ -51,5 +51,12 @@ public class WithdrawalController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         withdrawalService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // GET LAST 5 WITHDRAWALS BY ID ORDERED BY CREATED_AT DESC
+    @GetMapping("/recent")
+    public ResponseEntity<List<WithdrawalDTO.Response>> getRecent(
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(withdrawalService.getRecent(limit));
     }
 }

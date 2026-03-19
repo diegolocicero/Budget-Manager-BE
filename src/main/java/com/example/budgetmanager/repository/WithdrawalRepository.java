@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,8 @@ public interface WithdrawalRepository extends JpaRepository<Withdrawal, Long> {
     List<Withdrawal> findByUserId(UUID userId);
 
     List<Withdrawal> findByUserIdAndLabel(UUID userId, String label);
+
+    List<Withdrawal> findByUserIdOrderByCreatedAtDesc(UUID userId, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(w.value), 0) FROM Withdrawal w WHERE w.user.id = :userId")
     Long sumValuesByUserId(@Param("userId") UUID userId);

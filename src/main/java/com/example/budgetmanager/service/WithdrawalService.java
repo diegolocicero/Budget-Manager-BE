@@ -5,6 +5,8 @@ import com.example.budgetmanager.model.Withdrawal;
 import com.example.budgetmanager.repository.WithdrawalRepository;
 import com.example.budgetmanager.repository.UserRepository;
 import com.example.budgetmanager.exceptionHandler.ResourceNotFoundException;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +58,14 @@ public class WithdrawalService extends BaseService {
         validateOwnership(withdrawal.getUser().getId());
         withdrawalRepository.deleteById(id);
     }
+
+    public List<WithdrawalDTO.Response> getRecent(int limit) {
+    return withdrawalRepository
+        .findByUserIdOrderByCreatedAtDesc(getCurrentUserId(), PageRequest.of(0, limit))
+        .stream()
+        .map(this::toResponse)
+        .collect(Collectors.toList());
+}
 
     private void validateOwnership(UUID ownerId) {
         if (!ownerId.equals(getCurrentUserId())) {

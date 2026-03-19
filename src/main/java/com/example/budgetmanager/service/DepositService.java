@@ -5,6 +5,8 @@ import com.example.budgetmanager.model.Deposit;
 import com.example.budgetmanager.repository.DepositRepository;
 import com.example.budgetmanager.repository.UserRepository;
 import com.example.budgetmanager.exceptionHandler.ResourceNotFoundException;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,14 @@ public class DepositService extends BaseService {
         Deposit deposit = getOrThrow(id);
         validateOwnership(deposit.getUser().getId());
         depositRepository.deleteById(id);
+    }
+
+    public List<DepositDTO.Response> getRecent(int limit) {
+        return depositRepository
+                .findByUserIdOrderByCreatedAtDesc(getCurrentUserId(), PageRequest.of(0, limit))
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     private void validateOwnership(UUID ownerId) {

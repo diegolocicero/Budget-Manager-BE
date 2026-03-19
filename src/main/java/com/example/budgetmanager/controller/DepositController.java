@@ -41,7 +41,7 @@ public class DepositController {
     // PUT (UPDATE)
     @PutMapping("/{id}")
     public ResponseEntity<DepositDTO.Response> update(
-            @PathVariable Long id, 
+            @PathVariable Long id,
             @Valid @RequestBody DepositDTO.Request request) {
         return ResponseEntity.ok(depositService.update(id, request));
     }
@@ -51,5 +51,12 @@ public class DepositController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         depositService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //GET LAST 5 DEPOSITS BY ID ORDERED BY CREATED_AT DESC 
+    @GetMapping("/recent")
+    public ResponseEntity<List<DepositDTO.Response>> getRecent(
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(depositService.getRecent(limit));
     }
 }
