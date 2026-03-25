@@ -31,58 +31,77 @@ public class TransactionService extends BaseService {
         this.withdrawalRepository = withdrawalRepository;
     }
 
+    /**
+     * Recupera tutte le transazioni (Entrate e Uscite) dell'utente corrente,
+     * applicando filtri per tipo e ricerca testuale sulla label.
+     */
     public Page<TransactionDTO.Response> getAll(Pageable pageable, TransactionDTO.Type type, String label) {
         var userId = getCurrentUserId();
 
+        // 1. Inizializziamo lo stream in base al tipo richiesto
         Stream<TransactionDTO.Response> stream;
 
-        // Recupero e trasformazione in base al tipo, applicando il filtro label se presente
         if (type == TransactionDTO.Type.DEPOSIT) {
-            stream = filterByLabel(depositRepository.findByUserId(userId).stream(), label).map(this::toResponse);
+            stream = depositRepository.findByUserId(userId).stream()
+                    .map(this::toResponse);
         } else if (type == TransactionDTO.Type.WITHDRAWAL) {
-            stream = filterByLabel(withdrawalRepository.findByUserId(userId).stream(), label).map(this::toResponse);
+            stream = withdrawalRepository.findByUserId(userId).stream()
+                    .map(this::toResponse);
         } else {
+            // Unione di entrambi i flussi se il tipo è null (Tutti)
             stream = Stream.concat(
-                filterByLabel(depositRepository.findByUserId(userId).stream(), label).map(this::toResponse),
-                filterByLabel(withdrawalRepository.findByUserId(userId).stream(), label).map(this::toResponse)
+                depositRepository.findByUserId(userId).stream().map(this::toResponse),
+                withdrawalRepository.findByUserId(userId).stream().map(this::toResponse)
             );
         }
 
-        // Ordinamento per data decrescente
-        List<TransactionDTO.Response> sorted = stream
+        // 2. Applichiamo il filtro testuale (Case-Insensitive) se la label è presente
+        if (label != null && !label.isBlank()) {
+            String searchTag = label.toLowerCase().trim();
+            stream = stream.filter(t -> 
+                t.getLabel() != null && t.getLabel().toLowerCase().contains(searchTag)
+            );
+        }
+
+        // 3. Trasformiamo lo stream in una lista ordinata per data (decrescente)
+        // Nota: Poiché uniamo due tabelle diverse, l'ordinamento va fatto in memoria
+        List<TransactionDTO.Response> allResults = stream
                 .sorted(Comparator.comparing(TransactionDTO.Response::getCreatedAt).reversed())
                 .toList();
 
-        // Paginazione manuale sulla lista filtrata e ordinata
+        // 4. Gestione della paginazione manuale sulla lista finale
         int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), sorted.size());
-        
-        List<TransactionDTO.Response> pageContent = (start >= sorted.size())
-                ? List.of()
-                : sorted.subList(start, end);
+        int end = Math.min(start + pageable.getPageSize(), allResults.size());
 
-        return new PageImpl<>(pageContent, pageable, sorted.size());
-    }
-
-    // Metodo helper per filtrare lo stream in base alla label (case-insensitive)
-    private <T> Stream<T> filterByLabel(Stream<T> stream, String label) {
-        if (label == null || label.isBlank()) {
-            return stream;
+        List<TransactionDTO.Response> pageContent;
+        if (start > allResults.size()) {
+            pageContent = List.of();
+        } else {
+            pageContent = allResults.subList(start, end);
         }
-        String lowerLabel = label.toLowerCase();
-        return stream.filter(t -> {
-            String itemLabel = (t instanceof Deposit) ? ((Deposit) t).getLabel() : ((Withdrawal) t).getLabel();
-            return itemLabel != null && itemLabel.toLowerCase().contains(lowerLabel);
-        });
+
+        return new PageImpl<>(pageContent, pageable, allResults.size());
     }
+
+    // --- MAPPERS ---
 
     private TransactionDTO.Response toResponse(Deposit d) {
         return new TransactionDTO.Response(
-                d.getId(), d.getValue(), d.getLabel(), d.getCreatedAt(), TransactionDTO.Type.DEPOSIT);
+                d.getId(), 
+                d.getValue(), 
+                d.getLabel(), 
+                d.getCreatedAt(), 
+                TransactionDTO.Type.DEPOSIT
+        );
     }
 
     private TransactionDTO.Response toResponse(Withdrawal w) {
         return new TransactionDTO.Response(
-                w.getId(), w.getValue(), w.getLabel(), w.getCreatedAt(), TransactionDTO.Type.WITHDRAWAL);
+                w.getId(), 
+                w.getValue(), 
+                w.getLabel(), 
+                w.getCreatedAt(), 
+                TransactionDTO.Type.WITHDRAWAL
+        );
     }
 }
