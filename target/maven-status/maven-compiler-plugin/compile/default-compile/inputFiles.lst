@@ -2,11 +2,11 @@ C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\exam
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\config\SecurityConfig.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\controller\CronController.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\controller\DepositController.java
+C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\controller\TransactionController.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\controller\UserController.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\controller\WithdrawalController.java
-C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\dto\DepositDTO.java
+C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\dto\TransactionDTO.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\dto\UserDTO.java
-C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\dto\WithdrawalDTO.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\exceptionHandler\GlobalExceptionHandler.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\exceptionHandler\ResourceNotFoundException.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\model\BaseModel.java
@@ -18,5 +18,6 @@ C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\exam
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\repository\WithdrawalRepository.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\BaseService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\DepositService.java
+C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\TransactionService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\UserService.java
 C:\Users\diego.locicero\Desktop\Budget tracker\BT-Backend\src\main\java\com\example\budgetmanager\service\WithdrawalService.java
