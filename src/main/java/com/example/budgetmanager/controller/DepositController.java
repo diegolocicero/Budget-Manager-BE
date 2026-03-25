@@ -1,6 +1,6 @@
 package com.example.budgetmanager.controller;
 
-import com.example.budgetmanager.dto.DepositDTO;
+import com.example.budgetmanager.dto.TransactionDTO;
 import com.example.budgetmanager.service.DepositService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,28 +21,28 @@ public class DepositController {
 
     // GET ALL
     @GetMapping
-    public ResponseEntity<List<DepositDTO.Response>> getAll() {
+    public ResponseEntity<List<TransactionDTO.Response>> getAll() {
         return ResponseEntity.ok(depositService.getAll());
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<DepositDTO.Response> getById(@PathVariable Long id) {
+    public ResponseEntity<TransactionDTO.Response> getById(@PathVariable Long id) {
         return ResponseEntity.ok(depositService.getById(id));
     }
 
     // POST (CREATE)
     @PostMapping
-    public ResponseEntity<DepositDTO.Response> create(@Valid @RequestBody DepositDTO.Request request) {
-        DepositDTO.Response createdDeposit = depositService.create(request);
+    public ResponseEntity<TransactionDTO.Response> create(@Valid @RequestBody TransactionDTO.Request request) {
+        TransactionDTO.Response createdDeposit = depositService.create(request);
         return new ResponseEntity<>(createdDeposit, HttpStatus.CREATED);
     }
 
     // PUT (UPDATE)
     @PutMapping("/{id}")
-    public ResponseEntity<DepositDTO.Response> update(
+    public ResponseEntity<TransactionDTO.Response> update(
             @PathVariable Long id,
-            @Valid @RequestBody DepositDTO.Request request) {
+            @Valid @RequestBody TransactionDTO.Request request) {
         return ResponseEntity.ok(depositService.update(id, request));
     }
 
@@ -55,7 +55,7 @@ public class DepositController {
 
     //GET LAST 5 DEPOSITS BY ID ORDERED BY CREATED_AT DESC 
     @GetMapping("/recent")
-    public ResponseEntity<List<DepositDTO.Response>> getRecent(
+    public ResponseEntity<List<TransactionDTO.Response>> getRecent(
             @RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(depositService.getRecent(limit));
     }

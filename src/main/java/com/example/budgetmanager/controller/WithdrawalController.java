@@ -1,6 +1,6 @@
 package com.example.budgetmanager.controller;
 
-import com.example.budgetmanager.dto.WithdrawalDTO;
+import com.example.budgetmanager.dto.TransactionDTO;
 import com.example.budgetmanager.service.WithdrawalService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,28 +21,28 @@ public class WithdrawalController {
 
     // GET ALL
     @GetMapping
-    public ResponseEntity<List<WithdrawalDTO.Response>> getAll() {
+    public ResponseEntity<List<TransactionDTO.Response>> getAll() {
         return ResponseEntity.ok(withdrawalService.getAll());
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<WithdrawalDTO.Response> getById(@PathVariable Long id) {
+    public ResponseEntity<TransactionDTO.Response> getById(@PathVariable Long id) {
         return ResponseEntity.ok(withdrawalService.getById(id));
     }
 
     // POST (CREATE)
     @PostMapping
-    public ResponseEntity<WithdrawalDTO.Response> create(@Valid @RequestBody WithdrawalDTO.Request request) {
-        WithdrawalDTO.Response createdWithdrawal = withdrawalService.create(request);
+    public ResponseEntity<TransactionDTO.Response> create(@Valid @RequestBody TransactionDTO.Request request) {
+        TransactionDTO.Response createdWithdrawal = withdrawalService.create(request);
         return new ResponseEntity<>(createdWithdrawal, HttpStatus.CREATED);
     }
 
     // PUT (UPDATE)
     @PutMapping("/{id}")
-    public ResponseEntity<WithdrawalDTO.Response> update(
+    public ResponseEntity<TransactionDTO.Response> update(
             @PathVariable Long id,
-            @Valid @RequestBody WithdrawalDTO.Request request) {
+            @Valid @RequestBody TransactionDTO.Request request) {
         return ResponseEntity.ok(withdrawalService.update(id, request));
     }
 
@@ -55,7 +55,7 @@ public class WithdrawalController {
 
     // GET LAST 5 WITHDRAWALS BY ID ORDERED BY CREATED_AT DESC
     @GetMapping("/recent")
-    public ResponseEntity<List<WithdrawalDTO.Response>> getRecent(
+    public ResponseEntity<List<TransactionDTO.Response>> getRecent(
             @RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(withdrawalService.getRecent(limit));
     }

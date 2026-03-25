@@ -1,6 +1,6 @@
 package com.example.budgetmanager.service;
 
-import com.example.budgetmanager.dto.DepositDTO;
+import com.example.budgetmanager.dto.TransactionDTO;
 import com.example.budgetmanager.model.Deposit;
 import com.example.budgetmanager.repository.DepositRepository;
 import com.example.budgetmanager.repository.UserRepository;
@@ -25,26 +25,26 @@ public class DepositService extends BaseService {
         this.depositRepository = depositRepository;
     }
 
-    public List<DepositDTO.Response> getAll() {
+    public List<TransactionDTO.Response> getAll() {
         return depositRepository.findByUserId(getCurrentUserId()).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public DepositDTO.Response getById(Long id) {
+    public TransactionDTO.Response getById(Long id) {
         Deposit deposit = getOrThrow(id);
         validateOwnership(deposit.getUser().getId());
         return toResponse(deposit);
     }
 
     @Transactional
-    public DepositDTO.Response create(DepositDTO.Request request) {
+    public TransactionDTO.Response create(TransactionDTO.Request request) {
         Deposit deposit = new Deposit(request.getValue(), request.getLabel(), getOrCreateUser(getCurrentUserId()));
         return toResponse(depositRepository.save(deposit));
     }
 
     @Transactional
-    public DepositDTO.Response update(Long id, DepositDTO.Request request) {
+    public TransactionDTO.Response update(Long id, TransactionDTO.Request request) {
         Deposit deposit = getOrThrow(id);
         validateOwnership(deposit.getUser().getId());
         deposit.setValue(request.getValue());
@@ -59,7 +59,7 @@ public class DepositService extends BaseService {
         depositRepository.deleteById(id);
     }
 
-    public List<DepositDTO.Response> getRecent(int limit) {
+    public List<TransactionDTO.Response> getRecent(int limit) {
         return depositRepository
                 .findByUserIdOrderByCreatedAtDesc(getCurrentUserId(), PageRequest.of(0, limit))
                 .stream()
@@ -78,7 +78,7 @@ public class DepositService extends BaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Deposit", id));
     }
 
-    private DepositDTO.Response toResponse(Deposit d) {
-        return new DepositDTO.Response(d.getId(), d.getValue(), d.getLabel(), d.getCreatedAt());
+    private TransactionDTO.Response toResponse(Deposit d) {
+        return new TransactionDTO.Response(d.getId(), d.getValue(), d.getLabel(), d.getCreatedAt(), TransactionDTO.Type.DEPOSIT);
     }
 }

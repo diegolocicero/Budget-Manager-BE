@@ -1,6 +1,6 @@
 package com.example.budgetmanager.service;
 
-import com.example.budgetmanager.dto.WithdrawalDTO;
+import com.example.budgetmanager.dto.TransactionDTO;
 import com.example.budgetmanager.model.Withdrawal;
 import com.example.budgetmanager.repository.WithdrawalRepository;
 import com.example.budgetmanager.repository.UserRepository;
@@ -25,26 +25,26 @@ public class WithdrawalService extends BaseService {
         this.withdrawalRepository = withdrawalRepository;
     }
 
-    public List<WithdrawalDTO.Response> getAll() {
+    public List<TransactionDTO.Response> getAll() {
         return withdrawalRepository.findByUserId(getCurrentUserId()).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public WithdrawalDTO.Response getById(Long id) {
+    public TransactionDTO.Response getById(Long id) {
         Withdrawal withdrawal = getOrThrow(id);
         validateOwnership(withdrawal.getUser().getId());
         return toResponse(withdrawal);
     }
 
     @Transactional
-    public WithdrawalDTO.Response create(WithdrawalDTO.Request request) {
+    public TransactionDTO.Response create(TransactionDTO.Request request) {
         Withdrawal withdrawal = new Withdrawal(request.getValue(), request.getLabel(), getOrCreateUser(getCurrentUserId()));
         return toResponse(withdrawalRepository.save(withdrawal));
     }
 
     @Transactional
-    public WithdrawalDTO.Response update(Long id, WithdrawalDTO.Request request) {
+    public TransactionDTO.Response update(Long id, TransactionDTO.Request request) {
         Withdrawal withdrawal = getOrThrow(id);
         validateOwnership(withdrawal.getUser().getId());
         withdrawal.setValue(request.getValue());
@@ -59,7 +59,7 @@ public class WithdrawalService extends BaseService {
         withdrawalRepository.deleteById(id);
     }
 
-    public List<WithdrawalDTO.Response> getRecent(int limit) {
+    public List<TransactionDTO.Response> getRecent(int limit) {
     return withdrawalRepository
         .findByUserIdOrderByCreatedAtDesc(getCurrentUserId(), PageRequest.of(0, limit))
         .stream()
@@ -78,7 +78,7 @@ public class WithdrawalService extends BaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Withdrawal", id));
     }
 
-    private WithdrawalDTO.Response toResponse(Withdrawal w) {
-        return new WithdrawalDTO.Response(w.getId(), w.getValue(), w.getLabel(), w.getCreatedAt());
+    private TransactionDTO.Response toResponse(Withdrawal w) {
+        return new TransactionDTO.Response(w.getId(), w.getValue(), w.getLabel(), w.getCreatedAt(), TransactionDTO.Type.WITHDRAWAL);
     }
 }
