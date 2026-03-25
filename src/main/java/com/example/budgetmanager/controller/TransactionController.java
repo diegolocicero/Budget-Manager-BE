@@ -23,12 +23,13 @@ public class TransactionController {
     public ResponseEntity<Page<TransactionDTO.Response>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) TransactionDTO.Type type) {
+            @RequestParam(required = false) TransactionDTO.Type type,
+            @RequestParam(required = false) String label) { 
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-            return ResponseEntity.ok(transactionService.getAll(pageable, type));
+            return ResponseEntity.ok(transactionService.getAll(pageable, type, label));
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             throw e;
         }
     }

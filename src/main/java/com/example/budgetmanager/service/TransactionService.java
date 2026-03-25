@@ -31,33 +31,49 @@ public class TransactionService extends BaseService {
         this.withdrawalRepository = withdrawalRepository;
     }
 
-    public Page<TransactionDTO.Response> getAll(Pageable pageable, TransactionDTO.Type type) {
+    public Page<TransactionDTO.Response> getAll(Pageable pageable, TransactionDTO.Type type, String label) {
         var userId = getCurrentUserId();
 
         Stream<TransactionDTO.Response> stream;
 
+        // Recupero e trasformazione in base al tipo, applicando il filtro label se presente
         if (type == TransactionDTO.Type.DEPOSIT) {
-            stream = depositRepository.findByUserId(userId).stream().map(this::toResponse);
+            stream = filterByLabel(depositRepository.findByUserId(userId).stream(), label).map(this::toResponse);
         } else if (type == TransactionDTO.Type.WITHDRAWAL) {
-            stream = withdrawalRepository.findByUserId(userId).stream().map(this::toResponse);
+            stream = filterByLabel(withdrawalRepository.findByUserId(userId).stream(), label).map(this::toResponse);
         } else {
             stream = Stream.concat(
-                depositRepository.findByUserId(userId).stream().map(this::toResponse),
-                withdrawalRepository.findByUserId(userId).stream().map(this::toResponse)
+                filterByLabel(depositRepository.findByUserId(userId).stream(), label).map(this::toResponse),
+                filterByLabel(withdrawalRepository.findByUserId(userId).stream(), label).map(this::toResponse)
             );
         }
 
+        // Ordinamento per data decrescente
         List<TransactionDTO.Response> sorted = stream
                 .sorted(Comparator.comparing(TransactionDTO.Response::getCreatedAt).reversed())
                 .toList();
 
+        // Paginazione manuale sulla lista filtrata e ordinata
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), sorted.size());
+        
         List<TransactionDTO.Response> pageContent = (start >= sorted.size())
                 ? List.of()
                 : sorted.subList(start, end);
 
         return new PageImpl<>(pageContent, pageable, sorted.size());
+    }
+
+    // Metodo helper per filtrare lo stream in base alla label (case-insensitive)
+    private <T> Stream<T> filterByLabel(Stream<T> stream, String label) {
+        if (label == null || label.isBlank()) {
+            return stream;
+        }
+        String lowerLabel = label.toLowerCase();
+        return stream.filter(t -> {
+            String itemLabel = (t instanceof Deposit) ? ((Deposit) t).getLabel() : ((Withdrawal) t).getLabel();
+            return itemLabel != null && itemLabel.toLowerCase().contains(lowerLabel);
+        });
     }
 
     private TransactionDTO.Response toResponse(Deposit d) {
